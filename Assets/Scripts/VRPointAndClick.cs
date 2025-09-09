@@ -4,31 +4,59 @@ using UnityEngine.InputSystem;
 
 public class VRPointAndClick : MonoBehaviour
 {
-    [Header("Configuracion")]
-    public NavMeshAgent character;         // El personaje que haremos mover que tenga un componente con "NavMeshAgent"
-    public Transform rayOrigin;            // El punto de origen para el Raycast
-    public float rayLength = 20f;          // La distancia del Raycast
-    public LayerMask raycastLayers;        // Capas donde se puede hacer click 
+    [Header("Raycast")]
+    public Transform rayOrigin;              // Mano o cámara desde donde sale el raycast
+    public float rayDistance = 10f;          // Distancia máxima del raycast
+    public LayerMask rayMask;                // Qué capas detecta el raycast
 
     [Header("Input Action")]
-    public InputActionProperty selectAction; // Botón del control
+    public InputActionProperty selectAction; // El trigger o botón que usas para mover
 
-    private void Update()
+    [Header("References")]
+    public NavMeshAgent agent;               // Personaje que se mueve
+    public LineRenderer lineRenderer;        // Línea que dibuja la dirección
+    public GameObject destinationMarkerPrefab; // Prefab del marcador en el suelo
+
+    private GameObject currentMarker;
+
+    void Update()
     {
+        // Lanzamos el raycast desde la mano/cámara
+        Ray ray = new Ray(rayOrigin.position, rayOrigin.forward);
+        RaycastHit hit;
 
-        if (selectAction.action.WasPerformedThisFrame())
+        if (Physics.Raycast(ray, out hit, rayDistance, rayMask))
         {
-            Ray ray = new Ray(rayOrigin.position, rayOrigin.forward);
-            RaycastHit hit;
+            // Mostrar línea
+            if (!lineRenderer.enabled)
+                lineRenderer.enabled = true;
 
-            if (Physics.Raycast(ray, out hit, rayLength, raycastLayers))
+            lineRenderer.SetPosition(0, ray.origin);
+            lineRenderer.SetPosition(1, hit.point);
+
+            // Si presiono el input, mover agente y poner marcador
+            if (selectAction.action.WasPressedThisFrame())
             {
+                agent.SetDestination(hit.point);
 
-                character.SetDestination(hit.point);
+                // Si ya había un marcador, lo destruimos
+                if (currentMarker != null)
+                    Destroy(currentMarker);
 
-
-                Debug.DrawLine(ray.origin, hit.point, Color.green, 1f);
+                // Instanciar nuevo marcador en el punto de impacto
+                currentMarker = Instantiate(destinationMarkerPrefab, hit.point, Quaternion.identity);
             }
+        }
+        else
+        {
+            // Si el raycast no pega nada, ocultamos la línea
+            lineRenderer.enabled = false;
+        }
+
+        // Si el agente ya llegó a destino, destruir el marcador
+        if (currentMarker != null && !agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+        {
+            Destroy(currentMarker);
         }
     }
 }
