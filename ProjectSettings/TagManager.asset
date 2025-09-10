@@ -4,15 +4,16 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Anchor
+  - Button
+  - Ground
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Interactable
   - Water
   - UI
-  - 
+  - Ground
   - 
   - 
   - 

@@ -16,6 +16,7 @@ public class VRPointAndClick : MonoBehaviour
     public NavMeshAgent agent;               // Personaje que se mueve
     public LineRenderer lineRenderer;        // Línea que dibuja la dirección
     public GameObject destinationMarkerPrefab; // Prefab del marcador en el suelo
+    public CharacterTaskHandler character;
 
     private GameObject currentMarker;
 
@@ -34,17 +35,33 @@ public class VRPointAndClick : MonoBehaviour
             lineRenderer.SetPosition(0, ray.origin);
             lineRenderer.SetPosition(1, hit.point);
 
-            // Si presiono el input, mover agente y poner marcador
             if (selectAction.action.WasPressedThisFrame())
             {
-                agent.SetDestination(hit.point);
+                if (hit.collider.CompareTag("Ground"))
+                {
+                    // mover personaje directamente al suelo
+                    agent.SetDestination(hit.point);
 
-                // Si ya había un marcador, lo destruimos
-                if (currentMarker != null)
-                    Destroy(currentMarker);
+                    // Manejo del marcador (solo para suelo)
+                    if (currentMarker != null)
+                        Destroy(currentMarker);
 
-                // Instanciar nuevo marcador en el punto de impacto
-                currentMarker = Instantiate(destinationMarkerPrefab, hit.point, Quaternion.identity);
+                    currentMarker = Instantiate(destinationMarkerPrefab, hit.point, Quaternion.identity);
+                }
+                else if (hit.collider.CompareTag("Button"))
+                {
+                    // mover personaje al botón
+                    var button = hit.collider.GetComponent<ButtonInteractable>() ?? hit.collider.GetComponentInParent<ButtonInteractable>();
+
+                    if (button != null && character != null)
+                    {
+                        character.MoveToButton(button);
+                    }
+                    else
+                    {
+                        Debug.LogWarning("No se encontró CharacterTaskHandler o ButtonInteractable.");
+                    }
+                }
             }
         }
         else
