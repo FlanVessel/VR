@@ -15,8 +15,10 @@ public class EnemyManager : MonoBehaviour
     { 
         for(int i = 0; i < EnemyCount; i++) 
         { 
-            GameObject ins = Instantiate(Prefab, spawners[Random.Range (0,spawners.Count)].transform.position, Quaternion.identity);
-            ins.GetComponent<NavMeshAgent>().SetDestination(GameObject.FindWithTag("Player").transform.position);
+            // GameObject ins = Instantiate(Prefab, spawners[Random.Range (0,spawners.Count)].transform.position, Quaternion.identity);
+            // ins.GetComponent<NavMeshAgent>().SetDestination(GameObject.FindWithTag("Player").transform.position);
+
+            Instantiate(Prefab, spawners[Random.Range(0, spawners.Count)].transform.position, Quaternion.identity);
         }
     }  
 }
