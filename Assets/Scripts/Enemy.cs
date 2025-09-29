@@ -3,56 +3,103 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    public float visionRange = 10f;        // Distancia de visión
-    public float visionAngle = 45f;        // Ángulo del cono
-    public Transform eyePoint;             // Desde dónde mira el enemigo
+    [Header("Detection")]
+    public float visionRange = 15f;          // Qué tan lejos ve
+    public float visionAngle = 90f;          // Ángulo del cono de visión
+
+    [Header("Stats")]
+    public float speed = 3.5f;               // Velocidad de persecución
+    public int maxHealth = 100;              // Vida máxima
+    public int attackDamage = 10;            // Daño al jugador
+    public float attackRange = 2f;           // Distancia de ataque
+    public float attackCooldown = 1.5f;      // Tiempo entre ataques
+
+    private int currentHealth;
+    private Transform watcher;
     private NavMeshAgent agent;
-    private Transform player;
+    private float lastAttackTime;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        player = GameObject.FindWithTag("Watcher").transform;
+        watcher = GameObject.FindWithTag("Watcher").transform;
 
-        if (eyePoint == null)
-            eyePoint = transform; // Por defecto mira desde el centro del enemigo
+        currentHealth = maxHealth;
+        agent.speed = speed;
     }
 
     void Update()
     {
+        if (watcher == null) return;
+
         if (CanSeePlayer())
         {
-            // Persigue al jugador
-            agent.SetDestination(player.position);
-        }
-        else
-        {
-            // Si quieres, aquí pon patrulla o idle
-            agent.SetDestination(transform.position);
+            agent.SetDestination(watcher.position);
+
+            // Intentar atacar si está cerca
+            float distance = Vector3.Distance(transform.position, watcher.position);
+            if (distance <= attackRange && Time.time > lastAttackTime + attackCooldown)
+            {
+                AttackPlayer();
+                lastAttackTime = Time.time;
+            }
         }
     }
 
-    bool CanSeePlayer()
+    // Cono de visión
+    private bool CanSeePlayer()
     {
-        Vector3 directionToPlayer = (player.position - eyePoint.position).normalized;
+        Vector3 dirToPlayer = (watcher.position - transform.position).normalized;
+        float angle = Vector3.Angle(transform.forward, dirToPlayer);
 
-        // 1. ¿Está dentro del ángulo de visión?
-        float angle = Vector3.Angle(eyePoint.forward, directionToPlayer);
-        if (angle > visionAngle) return false;
-
-        // 2. ¿Está dentro del rango?
-        float distance = Vector3.Distance(eyePoint.position, player.position);
-        if (distance > visionRange) return false;
-
-        // 3. ¿Hay línea de visión (Raycast)?
-        if (Physics.Raycast(eyePoint.position, directionToPlayer, out RaycastHit hit, visionRange))
+        if (angle < visionAngle / 2f)
         {
-            if (hit.collider.CompareTag("Watcher"))
+            // Raycast para comprobar que no haya obstáculos
+            if (Physics.Raycast(transform.position + Vector3.up, dirToPlayer, out RaycastHit hit, visionRange))
             {
-                return true;
+                if (hit.collider.CompareTag("Player"))
+                {
+                    return true;
+                }
             }
         }
-
         return false;
+    }
+
+    // Atacar al jugador
+    private void AttackPlayer()
+    {
+        Debug.Log($"{gameObject.name} ataca al jugador por {attackDamage} de daño.");
+        // Aquí puedes llamar a un script de vida del jugador
+        // player.GetComponent<PlayerHealth>()?.TakeDamage(attackDamage);
+    }
+
+    // Recibir daño
+    public void TakeDamage(int amount)
+    {
+        currentHealth -= amount;
+        Debug.Log($"{gameObject.name} recibió {amount} de daño. Vida restante: {currentHealth}");
+
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    // Reaccionar a golpes/lanzamientos
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Si choca fuerte con algo, recibe daño proporcional a la fuerza
+        if (collision.relativeVelocity.magnitude > 5f) // Umbral
+        {
+            int damage = Mathf.RoundToInt(collision.relativeVelocity.magnitude * 2f);
+            TakeDamage(damage);
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log($"{gameObject.name} ha muerto.");
+        Destroy(gameObject);
     }
 }
