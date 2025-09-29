@@ -44,8 +44,8 @@ GameObject:
   - component: {fileID: 8427232376210421767}
   - component: {fileID: 1603768792268241782}
   - component: {fileID: 4832884858340795977}
-  - component: {fileID: 3910412033999227258}
   - component: {fileID: 3689906869271857301}
+  - component: {fileID: 3910412033999227258}
   - component: {fileID: -4046743653891498980}
   m_Layer: 0
   m_Name: Enemy
@@ -169,21 +169,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &3910412033999227258
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8492162577281095407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efd1060e8a3257f4eb1f7136d148b965, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  visionRange: 10
-  visionAngle: 45
-  eyePoint: {fileID: 5343074414214371422}
 --- !u!54 &3689906869271857301
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -211,6 +196,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &3910412033999227258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8492162577281095407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efd1060e8a3257f4eb1f7136d148b965, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy
+  visionRange: 10
+  visionAngle: 45
+  speed: 3.5
+  maxHealth: 100
+  attackDamage: 10
+  attackRange: 2
+  attackCooldown: 1.5
 --- !u!114 &-4046743653891498980
 MonoBehaviour:
   m_ObjectHideFlags: 0

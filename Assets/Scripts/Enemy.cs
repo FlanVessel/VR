@@ -36,7 +36,6 @@ public class Enemy : MonoBehaviour
         {
             agent.SetDestination(watcher.position);
 
-            // Intentar atacar si está cerca
             float distance = Vector3.Distance(transform.position, watcher.position);
             if (distance <= attackRange && Time.time > lastAttackTime + attackCooldown)
             {
@@ -46,7 +45,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // Cono de visión
     private bool CanSeePlayer()
     {
         Vector3 dirToPlayer = (watcher.position - transform.position).normalized;
@@ -54,7 +52,6 @@ public class Enemy : MonoBehaviour
 
         if (angle < visionAngle / 2f)
         {
-            // Raycast para comprobar que no haya obstáculos
             if (Physics.Raycast(transform.position + Vector3.up, dirToPlayer, out RaycastHit hit, visionRange))
             {
                 if (hit.collider.CompareTag("Player"))
@@ -70,8 +67,6 @@ public class Enemy : MonoBehaviour
     private void AttackPlayer()
     {
         Debug.Log($"{gameObject.name} ataca al jugador por {attackDamage} de daño.");
-        // Aquí puedes llamar a un script de vida del jugador
-        // player.GetComponent<PlayerHealth>()?.TakeDamage(attackDamage);
     }
 
     // Recibir daño
@@ -89,8 +84,7 @@ public class Enemy : MonoBehaviour
     // Reaccionar a golpes/lanzamientos
     private void OnCollisionEnter(Collision collision)
     {
-        // Si choca fuerte con algo, recibe daño proporcional a la fuerza
-        if (collision.relativeVelocity.magnitude > 5f) // Umbral
+        if (collision.relativeVelocity.magnitude > 5f) 
         {
             int damage = Mathf.RoundToInt(collision.relativeVelocity.magnitude * 2f);
             TakeDamage(damage);
