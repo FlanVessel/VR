@@ -5,19 +5,22 @@ public class Enemy : MonoBehaviour
 {
 
     [Header("Movimiento del Enemigo")]
+
     public float visionRange = 15f;          // Qué tan lejos ve
     public float visionAngle = 90f;          // Ángulo del cono de visión
     public float moveSpeed = 3.5f;            // Velocidad de movimiento
 
+    private GameObject pointVision;
+
     protected Transform watcher;
     protected NavMeshAgent agent;
-
 
     protected virtual void Start()
     {
         watcher = GameObject.FindGameObjectWithTag("Watcher").transform;
         agent = GetComponent<NavMeshAgent>();
         agent.speed = moveSpeed;
+        pointVision = GetComponent<GameObject>();
     }
 
     protected virtual void Update()
