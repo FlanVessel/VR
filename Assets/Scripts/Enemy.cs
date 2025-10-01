@@ -3,97 +3,55 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    [Header("Detection")]
+
+    [Header("Movimiento del Enemigo")]
     public float visionRange = 15f;          // Qué tan lejos ve
     public float visionAngle = 90f;          // Ángulo del cono de visión
+    public float moveSpeed = 3.5f;            // Velocidad de movimiento
 
-    [Header("Stats")]
-    public float speed = 3.5f;               // Velocidad de persecución
-    public int maxHealth = 100;              // Vida máxima
-    public int attackDamage = 10;            // Daño al jugador
-    public float attackRange = 2f;           // Distancia de ataque
-    public float attackCooldown = 1.5f;      // Tiempo entre ataques
+    protected Transform watcher;
+    protected NavMeshAgent agent;
 
-    private int currentHealth;
-    private Transform watcher;
-    private NavMeshAgent agent;
-    private float lastAttackTime;
 
-    void Start()
+    protected virtual void Start()
     {
+        watcher = GameObject.FindGameObjectWithTag("Watcher").transform;
         agent = GetComponent<NavMeshAgent>();
-        watcher = GameObject.FindWithTag("Watcher").transform;
-
-        currentHealth = maxHealth;
-        agent.speed = speed;
+        agent.speed = moveSpeed;
     }
 
-    void Update()
+    protected virtual void Update()
     {
-        if (watcher == null) return;
-
-        if (CanSeePlayer())
+        if (CanSeeWatcher())
         {
             agent.SetDestination(watcher.position);
-
-            float distance = Vector3.Distance(transform.position, watcher.position);
-            if (distance <= attackRange && Time.time > lastAttackTime + attackCooldown)
-            {
-                AttackPlayer();
-                lastAttackTime = Time.time;
-            }
+        }
+        else
+        {
+            agent.SetDestination(transform.position); // Detenerse si no ve al watcher
         }
     }
 
-    private bool CanSeePlayer()
+    protected bool CanSeeWatcher()
     {
-        Vector3 dirToPlayer = (watcher.position - transform.position).normalized;
-        float angle = Vector3.Angle(transform.forward, dirToPlayer);
+        Vector3 directionToWatcher = watcher.position - transform.position;
+        float distanceToWatcher = directionToWatcher.magnitude;
 
-        if (angle < visionAngle / 2f)
+        if (distanceToWatcher <= visionRange)
         {
-            if (Physics.Raycast(transform.position + Vector3.up, dirToPlayer, out RaycastHit hit, visionRange))
+            float angleToWatcher = Vector3.Angle(transform.forward, directionToWatcher);
+            if (angleToWatcher <= visionAngle / 2f)
             {
-                if (hit.collider.CompareTag("Player"))
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position + Vector3.up, directionToWatcher.normalized, out hit, visionRange))
                 {
-                    return true;
+                    if (hit.transform == watcher)
+                    {
+                        return true; // Puede ver al watcher
+                    }
                 }
             }
         }
-        return false;
-    }
-
-    // Atacar al jugador
-    private void AttackPlayer()
-    {
-        Debug.Log($"{gameObject.name} ataca al jugador por {attackDamage} de daño.");
-    }
-
-    // Recibir daño
-    public void TakeDamage(int amount)
-    {
-        currentHealth -= amount;
-        Debug.Log($"{gameObject.name} recibió {amount} de daño. Vida restante: {currentHealth}");
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    // Reaccionar a golpes/lanzamientos
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.relativeVelocity.magnitude > 5f) 
-        {
-            int damage = Mathf.RoundToInt(collision.relativeVelocity.magnitude * 2f);
-            TakeDamage(damage);
-        }
-    }
-
-    private void Die()
-    {
-        Debug.Log($"{gameObject.name} ha muerto.");
-        Destroy(gameObject);
+        return false; // No puede ver al watcher
     }
 }
