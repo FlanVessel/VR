@@ -8235,7 +8235,7 @@ GameObject:
   - component: {fileID: 658789074}
   - component: {fileID: 658789073}
   - component: {fileID: 658789072}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9850,7 +9850,7 @@ GameObject:
   - component: {fileID: 984780303}
   - component: {fileID: 984780307}
   - component: {fileID: 984780308}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Gato_
   m_TagString: Watcher
   m_Icon: {fileID: 0}
@@ -10002,7 +10002,7 @@ GameObject:
   - component: {fileID: 986602330}
   - component: {fileID: 986602329}
   - component: {fileID: 986602328}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -17980,7 +17980,7 @@ GameObject:
   - component: {fileID: 1472407110}
   - component: {fileID: 1472407109}
   - component: {fileID: 1472407108}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (34)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19221,7 +19221,7 @@ GameObject:
   - component: {fileID: 1619805828}
   - component: {fileID: 1619805827}
   - component: {fileID: 1619805826}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19512,7 +19512,7 @@ GameObject:
   - component: {fileID: 1694556076}
   - component: {fileID: 1694556075}
   - component: {fileID: 1694556074}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20656,7 +20656,7 @@ GameObject:
   - component: {fileID: 1728184155}
   - component: {fileID: 1728184154}
   - component: {fileID: 1728184153}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Plane
   m_TagString: Ground
   m_Icon: {fileID: 0}

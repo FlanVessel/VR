@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class NormalEnemy : Enemy
 {
-    protected override void Start()
+    public void OnDetectPlayer()
     {
-        base.Start();
-        // Aquí puedes agregar cualquier inicialización específica para NormalEnemy
+        base.OnDetectPlayer();
     }
 
-    protected override void Update()
+    public void OnLosePlayer()
     {
-        base.Update();
-        // Aquí puedes agregar cualquier lógica específica para NormalEnemy
+        base.OnLosePlayer();
     }
 }
