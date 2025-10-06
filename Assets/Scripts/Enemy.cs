@@ -4,88 +4,62 @@ using UnityEngine.AI;
 public class Enemy : MonoBehaviour
 {
 
-    [Header("Movimiento del Enemigo")]
+    [Header("Configuración de visión")]
+    public float viewDistance = 10f;     
+    public float viewAngle = 90f;        
 
-    public float visionRange = 15f;          // Qué tan lejos ve
-    public float visionAngle = 90f;          // Ángulo del cono de visión
-    public float moveSpeed = 3.5f;            // Velocidad de movimiento
-    public LayerMask obstacleMask;
-    public LayerMask playerMask;
+    [Header("Movimiento")]
+    public float speed = 3.5f;
+    private NavMeshAgent agent;
 
-    protected Transform watcher;
-    protected NavMeshAgent agent;
-    protected bool watcherVisible;
+    [Header("Watcher")]
+    public Transform watcher;
 
-    protected virtual void Awake()
+    // Iniccia en busqueda del componente NavMeshAgent y el objeto con tag "Watcher"
+    void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();    //obtenemos componente de NavMesh
-        agent.speed = moveSpeed;    //mencionamos que la velocidad del nav sera igual al moveSpeed
-
-        GameObject watch = GameObject.FindGameObjectWithTag("Watcher");
-
-        if(watch != null)
-        {
-            watcher = watch.transform;
-        }
+        agent = GetComponent<NavMeshAgent>();
+        watcher = GameObject.FindGameObjectWithTag("Watcher").transform;
     }
 
-    protected virtual void Update()
+    // Por cada frame, llama la función de detección del watcher
+    void Update()
     {
-        if (watcher == null) return;
-        {
-            CheckVision();
-        }
-
-        if (watcherVisible)
-        {
-            OnDetectPlayer();
-        }
-        else
-        {
-            OnLosePlayer();
-        }
+        // Llama la función de detección del watcher
+        DetectWatcher();
     }
 
-    public void CheckVision()
+    void DetectWatcher()
     {
-        watcherVisible = false;
+        // Direcciones izquierda y derecha de visión
+        Vector3 leftLimit = Quaternion.Euler(0, -viewAngle / 2f, 0) * transform.forward;
+        Vector3 rightLimit = Quaternion.Euler(0, viewAngle / 2f, 0) * transform.forward;
 
-        Vector3 movToPlayer = (watcher.position - transform.position).normalized;
-        float distanceToPlayer = Vector3.Distance(transform.position, watcher.position);
+        // Vector hacia el watcher
+        Vector3 dirToPlayer = (watcher.position - transform.position).normalized;
 
-        if (distanceToPlayer < visionRange)
+        // Devuelve el angulo entre dos vectores en grados
+        float angleToPlayer = Vector3.Angle(transform.forward, dirToPlayer);
+
+        // Si el watcher está dentro del ángulo de visión
+        if (angleToPlayer < viewAngle / 2f)
         {
-            float angleToPlayer = Vector3.Angle(transform.forward, movToPlayer);
-
-            if (angleToPlayer < visionRange / 2)
+            // Lanzamos un raycast desde el enemigo al watcher
+            if (Physics.Raycast(transform.position, dirToPlayer, out RaycastHit hit, viewDistance))
             {
-                if (!Physics.Raycast(transform.position + Vector3.up * 1.5f, movToPlayer, distanceToPlayer, obstacleMask))
+                // En caso de que el raycast golpee al watcher
+                if (hit.transform.CompareTag("Watcher"))
                 {
-                    watcherVisible = true;
-                }    
-            }    
+                    // Lo seguimos
+                    Debug.Log("Jugador detectado!");
+                    agent.SetDestination(watcher.position);
+                }
+            }
         }
-    }
 
-    /*
-    protected Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
-    {
-        if (!angleIsGlobal)
-        {
-            angleInDegrees += transform.eulerAngles.y;
-        }
-            
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
-    }
-    */
-
-    public void OnDetectPlayer()
-    {
-        agent.SetDestination(watcher.position);
-    }
-
-    public void OnLosePlayer()
-    {
-        agent.ResetPath();
+        // Debug visual en la escena
+        Debug.DrawRay(transform.position, leftLimit * viewDistance, Color.red);
+        Debug.DrawRay(transform.position, rightLimit * viewDistance, Color.red);
+        Debug.DrawRay(transform.position, transform.forward * viewDistance, Color.yellow);
     }
 }

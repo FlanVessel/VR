@@ -303,12 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f26cee0ee3f9e2344884927b3d7ea303, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NormalEnemy
-  visionRange: 15
-  visionAngle: 90
-  moveSpeed: 3.5
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 256
-  playerMask:
-    serializedVersion: 2
-    m_Bits: 128
+  viewDistance: 10
+  viewAngle: 90
+  speed: 3.5
+  watcher: {fileID: 0}
