@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class CharacterTaskHandler : MonoBehaviour
 {
+    [Header("Referencias")]
     public NavMeshAgent watcher;
     private ButtonInteractable _currentButton;
 
@@ -33,4 +34,5 @@ public class CharacterTaskHandler : MonoBehaviour
         _currentButton = button;
         watcher.SetDestination(button.transform.position);
     }
+
 }

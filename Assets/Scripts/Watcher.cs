@@ -18,15 +18,10 @@ public class Watcher : MonoBehaviour
     public Color originalColor;
     private bool _isInvulnerable = false;
 
-    [Header("UI")]
-    public GameObject failMenu;
-    public Transform menuSpawn;
-
     private void Start()
     {
         _currentHealth = maxHealth;
         originalColor = watcherRenderer.material.color;
-        if (failMenu != null) failMenu.SetActive(false);
     }
 
     public void TakeDamage(int damage)
@@ -70,15 +65,16 @@ public class Watcher : MonoBehaviour
 
     private IEnumerator TemporaryInvisibility()
     {
-        // El Watcher se vuelve "invisible" para los enemigos temporalmente
+        // El Watcher se vuelve "invisible"
         _isInvulnerable = true;
 
-        // Cambiar capa o tag para que los enemigos no lo detecten
+        // Cambiar tag para no ser papeado
         gameObject.tag = "Invisible";
 
         yield return new WaitForSeconds(2f); // Duración del "polvo"
         gameObject.tag = "Watcher";
 
+        //puede ser papeado de nuevo
         _isInvulnerable = false;
     }
 
@@ -86,23 +82,6 @@ public class Watcher : MonoBehaviour
     {
         if (deathEffect != null)
             Instantiate(deathEffect, transform.position, Quaternion.identity);
-
-        if (failMenu != null)
-        {
-            failMenu.SetActive(true);
-
-            // Lo colocamos frente al jugador (en menuSpawnPoint si lo hay)
-            if (menuSpawn != null)
-            {
-                failMenu.transform.position = menuSpawn.position;
-                failMenu.transform.rotation = menuSpawn.rotation;
-            }
-            else
-            {
-                failMenu.transform.position = transform.position + transform.forward * 2f + Vector3.up * 1.5f;
-                failMenu.transform.LookAt(Camera.main.transform);
-            }
-        }
 
         Time.timeScale = 0f;
     }

@@ -9,6 +9,7 @@ TagManager:
   - Watcher
   - Anchor
   - Invisible
+  - Pickup
   layers:
   - Default
   - TransparentFX
