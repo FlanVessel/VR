@@ -7,6 +7,8 @@ TagManager:
   - Button
   - Ground
   - Watcher
+  - Anchor
+  - Invisible
   layers:
   - Default
   - TransparentFX
