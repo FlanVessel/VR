@@ -86,6 +86,7 @@ public class Enemy : MonoBehaviour
                 // En caso de que el raycast golpee al watcher
                 if (hit.transform.CompareTag("Watcher"))
                 {
+                    // Si no estaba persiguiendo, detiene la corutina de patrulla
                     if (!_isChasing)
                     {
                         if (_enemyCoroutine != null)

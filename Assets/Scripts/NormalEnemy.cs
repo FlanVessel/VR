@@ -1,16 +1,18 @@
 using UnityEngine;
+using System.Collections;
 
 public class NormalEnemy : Enemy
 {
-    [Header("Daño")]
+    [Header("DaÃ±o y Enfriamiento")]
     public int damage = 1;                
     public float attackCooldown = 2f;     
 
     private bool _canAttack = true;
 
+    // Detecta colisiones con el Watcher
     private void OnCollisionEnter(Collision collision)
     {
-        // Si choca con el Watcher
+        // Si choca con el Watcher 
         if (collision.gameObject.CompareTag("Watcher") && _canAttack)
         {
             Watcher watcher = collision.gameObject.GetComponent<Watcher>();
@@ -23,7 +25,9 @@ public class NormalEnemy : Enemy
         }
     }
 
-    private System.Collections.IEnumerator AttackCooldown()
+
+    // Enfriamiento entre ataques (Empieza la corutina)
+    private IEnumerator AttackCooldown()
     {
         _canAttack = false;
         yield return new WaitForSeconds(attackCooldown);
