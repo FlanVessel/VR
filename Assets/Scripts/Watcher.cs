@@ -13,7 +13,7 @@ public class Watcher : MonoBehaviour
     public ParticleSystem hitEffect;
     public ParticleSystem deathEffect;
 
-    [Header("Color Daño")]
+    [Header("Color DaÃ±o")]
     public Color hitColor = Color.red;
     public Color originalColor;
     private bool _isInvulnerable = false;
@@ -45,7 +45,7 @@ public class Watcher : MonoBehaviour
     {
         // Efecto visual de golpe
         float blinkSpeed = Mathf.Lerp(0.4f, 0.1f, 1f - (_currentHealth / (float)maxHealth));
-        // Menos vida = parpadeo más rápido
+        // Menos vida = parpadeo mï¿½s rï¿½pido
 
         if (hitEffect != null)
             hitEffect.Play();
@@ -71,7 +71,7 @@ public class Watcher : MonoBehaviour
         // Cambiar tag para no ser papeado
         gameObject.tag = "Invisible";
 
-        yield return new WaitForSeconds(2f); // Duración del "polvo"
+        yield return new WaitForSeconds(2f); // Duraciï¿½n del "polvo"
         gameObject.tag = "Watcher";
 
         //puede ser papeado de nuevo
@@ -84,6 +84,19 @@ public class Watcher : MonoBehaviour
             Instantiate(deathEffect, transform.position, Quaternion.identity);
 
         Time.timeScale = 0f;
+
+        // Mostrar panel de Game Over
+        if (GameOverManager.Instance != null)
+        {
+            GameOverManager.Instance.ShowGameOver();
+        }
+        else
+        {
+            Debug.LogWarning("GameOverManager no estï¿½ asignado en el inspector.");
+        }
+
+        // Desactivar el Watcher
+        gameObject.SetActive(false);
     }
 
 }
