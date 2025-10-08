@@ -7,6 +7,7 @@ public class WinManager : MonoBehaviour
     public static WinManager Instance { get; private set; }
 
     public GameObject winPanelPrefab;
+    //public Camera cam;
     private GameObject instance;
 
     private void Awake()
@@ -26,8 +27,8 @@ public class WinManager : MonoBehaviour
 
         Time.timeScale = 0f; // Congelar el tiempo
 
-        var playerCamera = Camera.main.transform;
-        instance = Instantiate(
+            var playerCamera = Camera.main.transform;
+            instance = Instantiate(
             winPanelPrefab,
             playerCamera.position + playerCamera.forward * 2f,
             Quaternion.LookRotation(playerCamera.forward)

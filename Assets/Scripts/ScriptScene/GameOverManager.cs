@@ -6,7 +6,8 @@ public class GameOverManager : MonoBehaviour
 {
     public static GameOverManager Instance { get; private set; }
 
-    public GameObject gameOverPanelPrefab; 
+    public GameObject gameOverPanelPrefab;
+    //public Camera cam;
     private GameObject instance;
 
     private void Awake()
@@ -28,8 +29,8 @@ public class GameOverManager : MonoBehaviour
 
         Time.timeScale = 0f;
 
-        var playerCamera = Camera.main.transform;
-        instance = Instantiate(
+            var playerCamera = Camera.main.transform;
+            instance = Instantiate(
             gameOverPanelPrefab,
             playerCamera.position + playerCamera.forward * 2f,
             Quaternion.LookRotation(playerCamera.forward)
