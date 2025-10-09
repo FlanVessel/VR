@@ -9,6 +9,8 @@ public class NormalEnemy : Enemy
 
     private bool _canAttack = true;
 
+    private Watcher _lastWatcher;
+
     // Detecta colisiones con el Watcher
     private void OnCollisionEnter(Collision collision)
     {
@@ -22,6 +24,15 @@ public class NormalEnemy : Enemy
                 watcher.TakeDamage(damage);
                 StartCoroutine(AttackCooldown());
             }
+        }
+    }
+
+    protected override void AttackWatcher()
+    {
+        if (_lastWatcher != null)
+        {
+            _lastWatcher.TakeDamage(damage);
+            StartCoroutine(AttackCooldown());
         }
     }
 

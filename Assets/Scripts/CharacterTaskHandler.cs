@@ -12,14 +12,10 @@ public class CharacterTaskHandler : MonoBehaviour
 
         if (_currentButton != null && !watcher.pathPending)
         {
-            Debug.Log($"Destino asignado: {_currentButton.name}");
-            Debug.Log($"Distancia restante: {watcher.remainingDistance}");
-            Debug.Log($"StoppingDistance: {watcher.stoppingDistance}");
-            Debug.Log($"PathPending: {watcher.pathPending}");
 
             if (watcher.remainingDistance <= watcher.stoppingDistance)
             {
-                // Cuando llega al botón
+                // Cuando llega al botï¿½n
                 _currentButton.StartInteraction();
                 Debug.Log("Si, llame al Metodo StartInteraction()");
                 _currentButton = null; // evita que lo repita

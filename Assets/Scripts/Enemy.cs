@@ -116,8 +116,10 @@ public class Enemy : MonoBehaviour
         //Lo perdi de vista
         if (_isChasing)
         {
-            _loseTimer += Time.deltaTime;
 
+            _loseTimer += Time.deltaTime;
+            
+            //Si pasa el tiempo de perder de vista, vuelve a patrullar
             if (_loseTimer >= loseSightTime)
             {
                 _isChasing = false;
