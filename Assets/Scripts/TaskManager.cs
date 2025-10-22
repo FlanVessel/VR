@@ -12,6 +12,8 @@ public class TaskManager : MonoBehaviour
 {
     [Header("Tareas Disponibles")]
     public CharacterTaskHandler buttonTaskHandler;
+    public PickupTaskHandler pickupTaskHandler;
+
 
     [Header("Tareas Actuales")]
     public bool IsBusy { get; private set; }
