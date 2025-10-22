@@ -36,7 +36,6 @@ public class TaskManager : MonoBehaviour
                     _currentTaskType = TaskType.Button;
                 }
                 break;
-                break;
             case TaskType.Pickup:
                 // Implementar lógica para la tarea "Tomar" si es necesario
                 break;
