@@ -37,7 +37,7 @@ public class TaskManager : MonoBehaviour
                 }
                 break;
             case TaskType.Pickup:
-                // Implementar lógica para la tarea "Tomar" si es necesario
+                
                 break;
             default:
                 Debug.LogWarning("Tipo de tarea no reconocido.");
