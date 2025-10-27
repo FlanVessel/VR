@@ -8,4 +8,6 @@ public class Bullet : MonoBehaviour
     private float _timer = 0f;
     private Rigidbody _rb;
 
+    
+
 }

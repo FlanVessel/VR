@@ -2,13 +2,13 @@ using UnityEngine;
 
 public enum FloorType
 {
-    Normal, Mud, Lava
+    None, Mud, Lava
 }
 
 [RequireComponent(typeof(Collider))]
 public class FloorEffect : MonoBehaviour
 {
-    public FloorType floorType = FloorType.Normal;
+    public FloorType floorType = FloorType.None;
     public float mudSpeedMultiplier = 0.5f;
     public float lavaDamagePerSecond = 10f;
 
