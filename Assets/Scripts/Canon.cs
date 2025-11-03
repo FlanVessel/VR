@@ -42,7 +42,6 @@ public class Canon : MonoBehaviour
     {
         if (bulletPrefab == null || spawnPoint == null)
         {
-            Debug.LogWarning("⚠️ Falta asignar bulletPrefab o spawnPoint en el inspector.");
             return;
         }
 

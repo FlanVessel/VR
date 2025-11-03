@@ -10,6 +10,8 @@ TagManager:
   - Anchor
   - Invisible
   - Pickup
+  - Wall
+  - Canon
   layers:
   - Default
   - TransparentFX

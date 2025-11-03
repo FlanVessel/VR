@@ -28,52 +28,23 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (_isHeld) return;
 
-        if (collision.gameObject.CompareTag("Watcher"))
+        Watcher watcher = collision.gameObject.GetComponent<Watcher>();
+        if (watcher != null)
         {
-            Watcher watcher = collision.gameObject.GetComponent<Watcher>();
-            if (watcher != null)
-                watcher.TakeDamage(1);
-
+            watcher.TakeDamage(1);
             Deactivate();
         }
-        else if (collision.gameObject.CompareTag("Canon"))
+
+        Canon canon = collision.gameObject.GetComponent<Canon>();
+        if (canon != null)
         {
-            // Desactiva el cañón si lo golpea
-            collision.gameObject.SetActive(false);
             Deactivate();
         }
-        else if (collision.gameObject.CompareTag("Wall"))
+
+        if (collision.gameObject.CompareTag("Wall"))
         {
-            // Simplemente desaparece al tocar paredes
             Deactivate();
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        // Si el jugador agarra la bala
-        if (other.CompareTag("Player"))
-        {
-            _isHeld = true;
-            _isLaunched = false;
-            _rb.linearVelocity = Vector3.zero;
-            _rb.isKinematic = true;
-            transform.SetParent(other.transform);
-        }
-    }
-
-    private void Update()
-    {
-        // Si está en manos del jugador y presiona una tecla, se lanza
-        if (_isHeld && Input.GetKeyDown(KeyCode.Space))
-        {
-            _isHeld = false;
-            _rb.isKinematic = false;
-            transform.SetParent(null);
-            _rb.AddForce(transform.forward * playerThrowForce, ForceMode.VelocityChange);
-            Invoke(nameof(Deactivate), lifetime);
         }
     }
 
