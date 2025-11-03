@@ -6,20 +6,51 @@ public enum TypeShoot
 }
 public class Canon : MonoBehaviour
 {
+    [Header("Configuración del cañón")]
     public TypeShoot typeShoot = TypeShoot.Normal;
-    private GameObject _canon;
-    public Transform spawn;
+    public Transform spawnPoint;
+    public GameObject bulletPrefab;
 
-    public void ConstantShoot()
+    [Header("Ajustes de disparo")]
+    public float normalFireRate = 1f;
+    public float fastFireRate = 0.3f;
+    public float normalSpeed = 10f;
+    public float fastSpeed = 20f;
+
+    private float _nextShootTime;
+
+    private void Update()
     {
-        switch (typeShoot)
+        if (Time.time >= _nextShootTime)
         {
-            case TypeShoot.Normal:
-                spawn.position += Vector3.forward * Time.deltaTime;
-                break;
-            case TypeShoot.Fast:
-                break;
+            switch (typeShoot)
+            {
+                case TypeShoot.Normal:
+                    Shoot(normalSpeed);
+                    _nextShootTime = Time.time + normalFireRate;
+                    break;
+
+                case TypeShoot.Fast:
+                    Shoot(fastSpeed);
+                    _nextShootTime = Time.time + fastFireRate;
+                    break;
+            }
         }
     }
 
+    private void Shoot(float speed)
+    {
+        if (bulletPrefab == null || spawnPoint == null)
+        {
+            Debug.LogWarning("⚠️ Falta asignar bulletPrefab o spawnPoint en el inspector.");
+            return;
+        }
+
+        GameObject bulletObj = Instantiate(bulletPrefab, spawnPoint.position, spawnPoint.rotation);
+        Bullet bullet = bulletObj.GetComponent<Bullet>();
+        if (bullet != null)
+        {
+            bullet.Launch(spawnPoint.forward * speed);
+        }
+    }
 }
