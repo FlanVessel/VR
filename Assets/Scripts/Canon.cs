@@ -13,8 +13,8 @@ public class Canon : MonoBehaviour
 
     [Header("Ajustes de disparo")]
     public float normalFireRate = 1f;
-    public float fastFireRate = 0.3f;
     public float normalSpeed = 10f;
+    public float fastFireRate = 0.3f;
     public float fastSpeed = 20f;
 
     private float _nextShootTime;

@@ -1,8 +1,9 @@
- using UnityEngine;
+using UnityEngine;
+using System.Collections;
 
 public enum FloorType
 {
-    None, Mud, Lava
+    None, Mud, Lava, Acid
 }
 
 [RequireComponent(typeof(Collider))]
@@ -10,7 +11,7 @@ public class FloorEffect : MonoBehaviour
 {
     public FloorType floorType = FloorType.None;
     public float mudSpeedMultiplier = 0.5f;
-    public float lavaDamagePerSecond = 10f;
+    public float acidSpeedMove = 5f;
 
     public void Start()
     {
@@ -18,23 +19,35 @@ public class FloorEffect : MonoBehaviour
         col.isTrigger = true;
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void Update()
     {
-        if (other.CompareTag("Watcher"))
+        
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        Watcher watcher = collision.GetComponent<Watcher>();
+        if (watcher != null)
         {
             switch (floorType)
             {
                 case FloorType.Mud:
-                    var agent = other.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                    var agent = collision.GetComponent<UnityEngine.AI.NavMeshAgent>();
                     if (agent != null)
                     {
                         agent.speed *= mudSpeedMultiplier;
                     }
                     break;
                 case FloorType.Lava:
-                    var watcher = other.GetComponent<Watcher>();
                     if (watcher != null)
                     {
+                        watcher.TakeDamage(1);
+                    }
+                    break;
+                case FloorType.Acid:
+                    if (watcher != null)
+                    {
+                        MoveDownandUp();
                         watcher.TakeDamage(1);
                     }
                     break;
@@ -49,5 +62,10 @@ public class FloorEffect : MonoBehaviour
             var agent = other.GetComponent<UnityEngine.AI.NavMeshAgent>();
             if (agent != null) agent.speed /= mudSpeedMultiplier;
         }
+    }
+
+    private void MoveDownandUp()
+    {
+        
     }
 }
