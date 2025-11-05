@@ -6,18 +6,17 @@ using UnityEngine.InputSystem;
 public class VRPointAndClick : MonoBehaviour
 {
     [Header("Raycast")]
-    public Transform rayOrigin;              
-    public float rayDistance = 10f;          
-    public LayerMask rayMask;                // Que capas detecta el raycast
+    public Transform rayOrigin;
+    public float rayDistance = 10f;
+    public LayerMask rayMask;
 
     [Header("Input Action")]
-    public InputActionProperty selectAction; 
+    public InputActionProperty selectAction;
 
     [Header("References")]
-    public NavMeshAgent agent;               // Personaje que se mueve
-    public LineRenderer lineRenderer;        // Linea que dibuja la direccion
-    public TaskManager taskManager;        // Maneja las tareas del personaje
-
+    public NavMeshAgent agent;
+    public LineRenderer lineRenderer;
+    public TaskManager taskManager;
 
     void Update()
     {
@@ -28,26 +27,14 @@ public class VRPointAndClick : MonoBehaviour
             lineRenderer.SetPosition(1, hit.point);
             lineRenderer.enabled = true;
 
-            if (selectAction.action.WasPressedThisFrame() && !taskManager.IsBusy)
+            if (selectAction.action.WasPressedThisFrame())
             {
-                if (hit.collider.CompareTag("Button"))
-                {
-                    taskManager.AssignTask(TaskType.Button, hit.collider.transform);
-                }
-                else if (hit.collider.CompareTag("Pickup"))
-                {
-                    taskManager.AssignTask(TaskType.Pickup, hit.collider.transform);
-                }
-                else if (hit.collider.CompareTag("Ground"))
-                {
-                    agent.SetDestination(hit.point);
-                }
+                taskManager.HandleRaycastHit(hit, agent);
             }
         }
         else
         {
             lineRenderer.enabled = false;
         }
-
     }
 }

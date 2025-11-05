@@ -61,10 +61,29 @@ public class Watcher : MonoBehaviour
         if (deathEffect != null)
             Instantiate(deathEffect, transform.position, Quaternion.identity);
 
-        Time.timeScale = 0f;
+        StartCoroutine(DeathSequence());
+    }
 
-        // Desactivar el Watcher
-        gameObject.SetActive(false);
+    private IEnumerator DeathSequence()
+    {
+        // (Opcional) Slow motion 5s reales
+    float originalTimeScale = Time.timeScale;
+    Time.timeScale = 0.2f;
+    Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+    // Mostrar panel “Fallaste” y programar avance
+    if (LevelUIFeedback.Instance != null)
+        LevelUIFeedback.Instance.ShowFailAndAdvance(5f);
+
+    // Espera 5s de tiempo real para que el jugador lo vea (puedes omitirlo si no quieres esperar aquí)
+    float t = 0f; while (t < 5f) { t += Time.unscaledDeltaTime; yield return null; }
+
+    // Restaurar tiempo
+    Time.timeScale = originalTimeScale;
+    Time.fixedDeltaTime = 0.02f;
+
+    // Desactivar al Watcher (opcional si tu siguiente escena crea otro)
+    gameObject.SetActive(false);
     }
 
 }

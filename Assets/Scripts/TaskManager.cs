@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using UnityEngine.AI;
 using UnityEngine;
 
 public enum TaskType
@@ -14,42 +14,60 @@ public class TaskManager : MonoBehaviour
     public CharacterTaskHandler buttonTaskHandler;
     public PickupTaskHandler pickupTaskHandler;
 
+    public bool IsBusy => (pickupTaskHandler != null && pickupTaskHandler.IsBusy);
 
-    [Header("Tareas Actuales")]
-    public bool IsBusy { get; private set; }
-    private TaskType _currentTaskType = TaskType.None;
-
-    public void SetBussy(bool busy)
+    public void HandleRaycastHit(RaycastHit hit, NavMeshAgent agent)
     {
-        IsBusy = busy;
+        if (hit.collider == null) return;
+        if (IsBusy) return;
+
+        var t = hit.collider.transform;
+
+        if (t.CompareTag("Button"))
+        {
+            var button = t.GetComponent<ButtonInteractable>();
+            if (buttonTaskHandler != null && button != null)
+            {
+                buttonTaskHandler.MoveToButton(button);
+            }
+            return;
+        }
+
+        if (t.CompareTag("Pickup"))
+        {
+            var item = t.GetComponent<PickupItem>();
+            if (pickupTaskHandler != null && item != null)
+            {
+                pickupTaskHandler.MoveToPickup(item);
+            }
+            return;
+        }
+
+        if (t.CompareTag("Ground") && agent != null)
+        {
+            agent.SetDestination(hit.point);
+        }
     }
 
     public void AssignTask(TaskType taskType, Transform target)
     {
-        if (IsBusy) return;
-
         switch (taskType)
         {
+            case TaskType.Pickup:
+                var item = target.GetComponent<PickupItem>();
+                if (pickupTaskHandler != null && item != null)
+                {
+                    pickupTaskHandler.MoveToPickup(item);
+                }
+                break;
+
             case TaskType.Button:
                 var button = target.GetComponent<ButtonInteractable>();
                 if (buttonTaskHandler != null && button != null)
                 {
                     buttonTaskHandler.MoveToButton(button);
-                    _currentTaskType = TaskType.Button;
                 }
                 break;
-            case TaskType.Pickup:
-                
-                break;
-            default:
-                Debug.LogWarning("Tipo de tarea no reconocido.");
-                break;
         }
-    }
-
-    public void ClearCurrentTask()
-    {
-        _currentTaskType = TaskType.None;
-        IsBusy = false;
     }
 }
