@@ -21,11 +21,11 @@ public class TaskManager : MonoBehaviour
         if (hit.collider == null) return;
         if (IsBusy) return;
 
-        var t = hit.collider.transform;
+        var ray = hit.collider.transform;
 
-        if (t.CompareTag("Button"))
+        if (ray.CompareTag("Button"))
         {
-            var button = t.GetComponent<ButtonInteractable>();
+            var button = ray.GetComponent<ButtonInteractable>();
             if (buttonTaskHandler != null && button != null)
             {
                 buttonTaskHandler.MoveToButton(button);
@@ -33,9 +33,9 @@ public class TaskManager : MonoBehaviour
             return;
         }
 
-        if (t.CompareTag("Pickup"))
+        if (ray.CompareTag("Pickup"))
         {
-            var item = t.GetComponent<PickupItem>();
+            var item = ray.GetComponent<PickupItem>();
             if (pickupTaskHandler != null && item != null)
             {
                 pickupTaskHandler.MoveToPickup(item);
@@ -43,7 +43,7 @@ public class TaskManager : MonoBehaviour
             return;
         }
 
-        if (t.CompareTag("Ground") && agent != null)
+        if (ray.CompareTag("Ground") && agent != null)
         {
             agent.SetDestination(hit.point);
         }

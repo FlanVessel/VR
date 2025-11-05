@@ -8,6 +8,12 @@ public class DropZone : MonoBehaviour
     [Header("Opcional")]
     public string watcherTag = "Watcher";
 
+    public void Start()
+    {
+       Collider col = GetComponent<Collider>();
+        col.isTrigger = true; 
+    }
+
     private void Reset()
     {
         var col = GetComponent<Collider>();

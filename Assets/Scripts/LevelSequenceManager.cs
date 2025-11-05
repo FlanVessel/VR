@@ -49,7 +49,7 @@ public class LevelSequenceManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("No hay mÃ¡s niveles en la lista.");
+            Debug.Log("No tengo mas niveles que cargar");
         }
     }
 }

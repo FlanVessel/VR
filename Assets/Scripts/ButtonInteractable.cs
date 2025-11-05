@@ -5,15 +5,15 @@ using System.Collections;
 public class ButtonInteractable : MonoBehaviour
 {
     [Header("Efecto de Circulo de Carga")]
-    public Image progressCircle;      //Una imagen de Canvas
-    public float interactionTime = 3f;      //Un float con nombre interactionTime de valor 3
+    public Image progressCircle;      
+    public float interactionTime = 3f;      
 
     [Header("Accion de Abrir la Puerta")]
-    public DoorController doorController;   //LLamamos a la clase DoorController y lo llamamos doorController
+    public DoorController doorController;
 
-    private bool _isInteracting = false;    //Una bool privada
+    private bool _isInteracting = false;
 
-    public void StartInteraction()   //Un metodo llamado StartInteraction
+    public void StartInteraction()
     {
         if (!_isInteracting && doorController != null && !doorController.IsOpened)   
         {
@@ -26,7 +26,7 @@ public class ButtonInteractable : MonoBehaviour
         }
     }
 
-    private IEnumerator FillProgress()   //Una Corotina
+    private IEnumerator FillProgress()
     {
         float timer = 0f;
 
@@ -37,11 +37,9 @@ public class ButtonInteractable : MonoBehaviour
             yield return null;
         }
 
-        // Interacción completa
         doorController.OpenDoor();
-        Debug.Log("Si abre Puerta");
+        Debug.Log("Si abri Puerta");
 
-        // Reset
         progressCircle.fillAmount = 0f;
         progressCircle.gameObject.SetActive(false);
         _isInteracting = false;

@@ -39,6 +39,7 @@ public class Bullet : MonoBehaviour
         Canon canon = collision.gameObject.GetComponent<Canon>();
         if (canon != null)
         {
+            canon.gameObject.SetActive(false);
             Deactivate();
         }
 

@@ -66,24 +66,23 @@ public class Watcher : MonoBehaviour
 
     private IEnumerator DeathSequence()
     {
-        // (Opcional) Slow motion 5s reales
-    float originalTimeScale = Time.timeScale;
-    Time.timeScale = 0.2f;
-    Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        //Para Relentizar la escena una vez que watcher muere
+        float originalTimeScale = Time.timeScale;
+        Time.timeScale = 0.2f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-    // Mostrar panel “Fallaste” y programar avance
-    if (LevelUIFeedback.Instance != null)
-        LevelUIFeedback.Instance.ShowFailAndAdvance(5f);
+        // Llamar a la UI de Cagaste
+        if (LevelUIFeedback.Instance != null)
+            LevelUIFeedback.Instance.ShowFailAndAdvance(5f);
 
-    // Espera 5s de tiempo real para que el jugador lo vea (puedes omitirlo si no quieres esperar aquí)
-    float t = 0f; while (t < 5f) { t += Time.unscaledDeltaTime; yield return null; }
+        // El jugador ve como muere el watcher
+        float t = 0f; while (t < 5f) { t += Time.unscaledDeltaTime; yield return null; }
 
-    // Restaurar tiempo
-    Time.timeScale = originalTimeScale;
-    Time.fixedDeltaTime = 0.02f;
+        // Restauramos el tiempo
+        Time.timeScale = originalTimeScale;
+        Time.fixedDeltaTime = 0.02f;
 
-    // Desactivar al Watcher (opcional si tu siguiente escena crea otro)
-    gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
 }

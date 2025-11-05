@@ -15,10 +15,10 @@ public class CharacterTaskHandler : MonoBehaviour
 
             if (watcher.remainingDistance <= watcher.stoppingDistance)
             {
-                // Cuando llega al bot�n
+                // Cuando llega al boton
                 _currentButton.StartInteraction();
                 Debug.Log("Si, llame al Metodo StartInteraction()");
-                _currentButton = null; // evita que lo repita
+                _currentButton = null;
                 Debug.Log("Logre que no se repita");
             }
         }

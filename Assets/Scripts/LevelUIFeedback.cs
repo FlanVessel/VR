@@ -18,11 +18,9 @@ public class LevelUIFeedback : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        // Los dejamos apagados al inicio por seguridad
         if (panelPerdiste) panelPerdiste.SetActive(false);
         if (panelGanaste) panelGanaste.SetActive(false);
 
-        // Cuando cargue una nueva escena, apagamos por si quedaron encendidos
         SceneManager.sceneLoaded += (s, m) =>
         {
             if (panelPerdiste) panelPerdiste.SetActive(false);
@@ -32,14 +30,26 @@ public class LevelUIFeedback : MonoBehaviour
 
     public void ShowFailAndAdvance(float seconds = 5f)
     {
-        if (panelPerdiste) StartCoroutine(ShowPanelThenAdvance(panelPerdiste, seconds, LevelStatus.Failed));
-        else StartCoroutine(AdvanceAfterSeconds(seconds, LevelStatus.Failed));
+        if (panelPerdiste)
+        {
+            StartCoroutine(ShowPanelThenAdvance(panelPerdiste, seconds, LevelStatus.Failed));
+        }
+        else
+        {
+            StartCoroutine(AdvanceAfterSeconds(seconds, LevelStatus.Failed));     
+        }
     }
 
     public void ShowSuccessAndAdvance(float seconds = 5f)
     {
-        if (panelGanaste) StartCoroutine(ShowPanelThenAdvance(panelGanaste, seconds, LevelStatus.Passed));
-        else StartCoroutine(AdvanceAfterSeconds(seconds, LevelStatus.Passed));
+        if (panelGanaste)
+        {            
+            StartCoroutine(ShowPanelThenAdvance(panelGanaste, seconds, LevelStatus.Passed));
+        }
+        else
+        {           
+            StartCoroutine(AdvanceAfterSeconds(seconds, LevelStatus.Passed));
+        }
     }
 
     private IEnumerator ShowPanelThenAdvance(GameObject panel, float seconds, LevelStatus status)

@@ -15,8 +15,8 @@ public class PickupTaskHandler : MonoBehaviour
     private GameObject carriedObject;
 
     // Estado
-    private bool isCarrying = false;  // Lleva un objeto sobre la cabeza
-    private bool isBusy     = false;  // En corrutina de pickup o drop
+    private bool isCarrying = false;
+    private bool isBusy     = false;
 
     public bool IsCarrying => isCarrying;
     public bool IsBusy     => isBusy;
@@ -26,14 +26,10 @@ public class PickupTaskHandler : MonoBehaviour
     {
         if (watcher == null) return;
 
-        // Llegada al objeto para iniciar el pickup (el jugador guió al watcher hasta ahí)
         if (!isBusy && !isCarrying && currentItem != null && ArrivedAt(currentItem.transform.position))
         {
             StartCoroutine(PickupRoutine());
         }
-
-        // Nota: ya NO comprobamos distancias a DropZone aquí.
-        // El Drop se dispara desde DropZone.OnTriggerEnter/Stay -> OnEnterDropZone(...)
     }
 
     public void MoveToPickup(PickupItem item)
