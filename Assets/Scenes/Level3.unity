@@ -119,6 +119,52 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &64644855
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 64644857}
+  - component: {fileID: 64644856}
+  m_Layer: 0
+  m_Name: TaskManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &64644856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64644855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72a86d00f58a9d14384389dd464ec806, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TaskManager
+  buttonTaskHandler: {fileID: 185469834}
+  pickupTaskHandler: {fileID: 185469832}
+--- !u!4 &64644857
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 64644855}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.28652, y: 0, z: -3.76892}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &123930865
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -302,6 +348,33 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3825a74266591ed47ba3465bf6be4192, type: 3}
+--- !u!114 &185469832 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4640759166880222353, guid: 3825a74266591ed47ba3465bf6be4192, type: 3}
+  m_PrefabInstance: {fileID: 185469831}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94bc40b645d802140810d5c0b8590d6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupTaskHandler
+--- !u!195 &185469833 stripped
+NavMeshAgent:
+  m_CorrespondingSourceObject: {fileID: 3768275137859069348, guid: 3825a74266591ed47ba3465bf6be4192, type: 3}
+  m_PrefabInstance: {fileID: 185469831}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &185469834 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3931405871791483991, guid: 3825a74266591ed47ba3465bf6be4192, type: 3}
+  m_PrefabInstance: {fileID: 185469831}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e1594d72dc73454b984ad9b3726fd57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterTaskHandler
 --- !u!1001 &252103916
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -543,6 +616,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 86252285716088054, guid: 0dbfad538435c0c4f9685e0e8b1b1526, type: 3}
+      propertyPath: typeShoot
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3787508447447381892, guid: 0dbfad538435c0c4f9685e0e8b1b1526, type: 3}
       propertyPath: m_Name
       value: Canon (1)
@@ -1241,7 +1318,7 @@ GameObject:
   - component: {fileID: 1575915106}
   - component: {fileID: 1575915105}
   - component: {fileID: 1575915104}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Piso (1)
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -2185,6 +2262,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 86252285716088054, guid: 0dbfad538435c0c4f9685e0e8b1b1526, type: 3}
+      propertyPath: typeShoot
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3787508447447381892, guid: 0dbfad538435c0c4f9685e0e8b1b1526, type: 3}
       propertyPath: m_Name
       value: Canon
@@ -2242,6 +2323,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1165159771464549451, guid: 220450c93d28ae640ab4c492280fb03c, type: 3}
+      propertyPath: agent
+      value: 
+      objectReference: {fileID: 185469833}
+    - target: {fileID: 1165159771464549451, guid: 220450c93d28ae640ab4c492280fb03c, type: 3}
+      propertyPath: taskManager
+      value: 
+      objectReference: {fileID: 64644856}
     - target: {fileID: 1191174290234064671, guid: 220450c93d28ae640ab4c492280fb03c, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -3071,7 +3160,7 @@ GameObject:
   - component: {fileID: 549150119149785844}
   - component: {fileID: 4643649118795751682}
   - component: {fileID: 5071085884897138993}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Piso
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -3690,7 +3779,7 @@ GameObject:
   - component: {fileID: 4653787088826171900}
   - component: {fileID: 538995898053669386}
   - component: {fileID: 102305238363097657}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Piso
   m_TagString: Ground
   m_Icon: {fileID: 0}
@@ -3725,3 +3814,4 @@ SceneRoots:
   - {fileID: 660861852}
   - {fileID: 4933043073891474448}
   - {fileID: 1709861843}
+  - {fileID: 64644857}
