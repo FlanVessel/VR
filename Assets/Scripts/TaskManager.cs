@@ -43,6 +43,15 @@ public class TaskManager : MonoBehaviour
             return;
         }
 
+        if (ray.CompareTag("ButtonLight"))
+        {
+            var buttonluz = ray.GetComponent<ButtonLight>();
+            if (buttonluz != null)
+            {
+                buttonluz.Interactuar();
+            }
+        }
+
         if (ray.CompareTag("Ground") && agent != null)
         {
             agent.SetDestination(hit.point);
