@@ -13,6 +13,7 @@ TagManager:
   - Wall
   - Canon
   - ButtonLight
+  - Ball
   layers:
   - Default
   - TransparentFX
