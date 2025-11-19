@@ -12,6 +12,7 @@ TagManager:
   - Pickup
   - Wall
   - Canon
+  - ButtonLight
   layers:
   - Default
   - TransparentFX

@@ -5,7 +5,8 @@ public enum TaskType
 {
     None,
     Button,
-    Pickup 
+    Pickup,
+    ThrowBall
 }
 
 public class TaskManager : MonoBehaviour
@@ -13,15 +14,26 @@ public class TaskManager : MonoBehaviour
     [Header("Tareas Disponibles")]
     public CharacterTaskHandler buttonTaskHandler;
     public PickupTaskHandler pickupTaskHandler;
+    public BallThrowTaskHandler ballThrowTaskHandler;
 
-    public bool IsBusy => (pickupTaskHandler != null && pickupTaskHandler.IsBusy);
+    public bool IsBusy => (pickupTaskHandler != null && pickupTaskHandler.IsBusy) || (ballThrowTaskHandler != null && ballThrowTaskHandler.IsBusy);
 
     public void HandleRaycastHit(RaycastHit hit, NavMeshAgent agent)
     {
         if (hit.collider == null) return;
-        if (IsBusy) return;
 
         var ray = hit.collider.transform;
+
+        if (ballThrowTaskHandler != null && ballThrowTaskHandler.IsCarrying)
+        {
+            if (ray.CompareTag("Button") || ray.CompareTag("ButtonLight"))
+            {
+                ballThrowTaskHandler.TryThrowToTarget(ray);
+                return;
+            }
+        }
+
+        if (IsBusy) return;
 
         if (ray.CompareTag("Button"))
         {
@@ -50,7 +62,18 @@ public class TaskManager : MonoBehaviour
             {
                 buttonluz.Interactuar();
             }
+            return;
         }
+        
+        if (ray.CompareTag("Ball"))
+        {
+            var ball = ray.GetComponent<ThrowableBall>();
+            if (ballThrowTaskHandler != null && ball != null)
+            {
+                ballThrowTaskHandler.MoveToBall(ball);
+            }
+            return;
+       }
 
         if (ray.CompareTag("Ground") && agent != null)
         {

@@ -10,7 +10,7 @@ public class Watcher : MonoBehaviour
     private int _currentHealth;
 
     [Header("Referencia")]
-    public Renderer watcherRenderer;
+    public SpriteRenderer watcherRenderer;
     public ParticleSystem deathEffect;
 
     [Header("Color Daño")]
@@ -21,7 +21,7 @@ public class Watcher : MonoBehaviour
     private void Start()
     {
         _currentHealth = maxHealth;
-        originalColor = watcherRenderer.material.color;
+        originalColor = watcherRenderer.color;
     }
 
     public void TakeDamage(int damage)
@@ -48,9 +48,9 @@ public class Watcher : MonoBehaviour
 
         while (timer < duration)
         {
-            watcherRenderer.material.color = hitColor;
+            watcherRenderer.color = hitColor;
             yield return new WaitForSeconds(blinkSpeed);
-            watcherRenderer.material.color = originalColor;
+            watcherRenderer.color = originalColor;
             yield return new WaitForSeconds(blinkSpeed);
             timer += blinkSpeed * 2;
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class AngleSprite : MonoBehaviour
 {
     [Header("Sprites en orden (8 direcciones)")]
-    [Tooltip("0: Frente, 1: Frente-Derecha, 2: Derecha, 3: Atrás-Derecha, 4: Atrás, 5: Atrás-Izquierda, 6: Izquierda, 7: Frente-Izquierda")]
+    [Tooltip("0: Frente, 1: Frente-Derecha, 2: Derecha, 3: Atrás-Derecha, 4: Atrás, 5: Atrás-Izquierda, 6: Izquierda, 7: Frente-Izquierda")] //como una nota si pones encima el cursor
     public Sprite[] directionalSprites = new Sprite[8];
 
     [Header("Referencias")]
@@ -38,7 +38,7 @@ public class AngleSprite : MonoBehaviour
         lookPos.y = transform.position.y;
         transform.LookAt(lookPos);
 
-        // 2. Vector hacia la cámara (en XZ) desde el root del gato
+        // 2. Vector hacia la cámara (en XZ)
         Vector3 toCamera = vrCamera.position - catRoot.position;
         toCamera.y = 0f;
         if (toCamera.sqrMagnitude < 0.0001f)
