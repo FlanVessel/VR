@@ -5,23 +5,17 @@ using UnityEngine.UI;
 public class ButtonLight : MonoBehaviour
 {
     [Header("Luces a controlar")]
-    [Tooltip("Luces que se prenderán / apagarán")]
     public Light[] luces;
 
     [Header("Configuración")]
-    [Tooltip("Tiempo de espera antes de cambiar el estado de la luz")]
     public float tiempoEspera = 1.5f;
 
     [Header("UI de Carga")]
-    [Tooltip("Imagen que se muestra mientras se 'carga' el prender/apagar")]
-    public Image imagenCarga; // imagen encima del botón (World Space o en Canvas)
+    public Image imagenCarga; // imagen encima del botón
 
     private bool lucesEncendidas = true;
     private bool estaOcupado = false;
 
-    /// <summary>
-    /// Llamar a esta función desde el TaskManager cuando el rayo toque el botón.
-    /// </summary>
     public void Interactuar()
     {
         if (estaOcupado) return; // evita spamear el botón
@@ -33,7 +27,7 @@ public class ButtonLight : MonoBehaviour
     {
         estaOcupado = true;
 
-        // Mostrar imagen de carga (si existe)
+        // Mostrar imagen de carga
         if (imagenCarga != null)
         {
             imagenCarga.gameObject.SetActive(true);

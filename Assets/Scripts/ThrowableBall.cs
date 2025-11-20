@@ -7,7 +7,7 @@ public class ThrowableBall : MonoBehaviour
 
     private void Awake()
     {
-        if (rb == null) rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
     }
 
     public void AttachTo(Transform holder)
@@ -37,7 +37,7 @@ public class ThrowableBall : MonoBehaviour
         float height = Mathf.Max(arcHeight, 0.1f);
 
         // Tiempo aproximado basado en distancia horizontal
-        float time = Mathf.Max(distXZ / 5f, 0.3f); // 5 = velocidad horizontal base
+        float time = Mathf.Max(distXZ / 5f, 0.3f);
 
         // Componente horizontal
         Vector3 vXZ = dirXZ / time;
@@ -67,7 +67,7 @@ public class ThrowableBall : MonoBehaviour
         }
 
         // Botón de Luz
-        if (col.CompareTag("BotonLuz"))
+        if (col.CompareTag("ButtonLight"))
         {
             var botonLuz = col.GetComponent<ButtonLight>();
             if (botonLuz != null)
