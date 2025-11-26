@@ -17,6 +17,8 @@ public class ButtonLight : MonoBehaviour
     [Header("Barreras para el watcher")]
     public NavMeshObstacle[] barreras;
 
+    public GameObject pared;
+
     private bool estaOcupado = false;
 
     private void Start()
@@ -39,6 +41,7 @@ public class ButtonLight : MonoBehaviour
     private IEnumerator ToggleLuzRoutine()
     {
         estaOcupado = true;
+        pared.SetActive(false);
 
         if (imagenCarga != null)
             imagenCarga.gameObject.SetActive(true);
