@@ -2,13 +2,6 @@ using UnityEngine.AI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum TaskType
-{
-    None,
-    Button,
-    Pickup,
-}
-
 public class TaskManager : MonoBehaviour
 {
     [Header("Tareas Disponibles")]
@@ -16,10 +9,12 @@ public class TaskManager : MonoBehaviour
     public PickupTaskHandler pickupTaskHandler;
     public BallThrowTaskHandler ballThrowTaskHandler;
 
+    // Propiedad para saber si el personaje está ocupado
     public bool IsBusy =>
         (ballThrowTaskHandler != null && ballThrowTaskHandler.IsBusy) ||
         (pickupTaskHandler     != null && pickupTaskHandler.IsBusy);
 
+    // Maneja el RaycastHit recibido y delega la acción al manejador correspondiente
     public void HandleRaycastHit(RaycastHit hit, NavMeshAgent agent)
     {
         if (hit.collider == null) return;
@@ -76,6 +71,7 @@ public class TaskManager : MonoBehaviour
         }
     }
 
+    // Maneja el lanzamiento de la pelota
     public void HandleThrowRay(RaycastHit hit)
     {
         if (ballThrowTaskHandler == null) return;
@@ -85,6 +81,7 @@ public class TaskManager : MonoBehaviour
         ballThrowTaskHandler.ThrowToPoint(hit.point);
     }
 
+    // Maneja la interacción directa con un botón (con pelota)
     public void HandleButtonHit(ButtonInteractable button)
     {
         if (button == null) return;
@@ -92,6 +89,7 @@ public class TaskManager : MonoBehaviour
         button.StartInteraction();
     }
 
+    // Maneja la interacción directa con una luz de botón (con pelota)
     public void HandleButtonLightHit(ButtonLight buttonLight)
     {
         if (buttonLight == null) return;
