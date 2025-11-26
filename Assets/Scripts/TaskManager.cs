@@ -1,5 +1,6 @@
 using UnityEngine.AI;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum TaskType
 {
@@ -13,59 +14,89 @@ public class TaskManager : MonoBehaviour
     [Header("Tareas Disponibles")]
     public CharacterTaskHandler buttonTaskHandler;
     public PickupTaskHandler pickupTaskHandler;
+    public BallThrowTaskHandler ballThrowTaskHandler;
+
+    public bool IsBusy =>
+        (ballThrowTaskHandler != null && ballThrowTaskHandler.IsBusy) ||
+        (pickupTaskHandler     != null && pickupTaskHandler.IsBusy);
 
     public void HandleRaycastHit(RaycastHit hit, NavMeshAgent agent)
     {
         if (hit.collider == null) return;
 
-        // Obtener el transform del objeto golpeado
-        var ray = hit.collider.transform;
+        Transform tr = hit.collider.transform;
 
-        if (ray.CompareTag("Button"))
+        if (tr.TryGetComponent<ButtonLight>(out var buttonLight))
         {
-            var button = ray.GetComponent<ButtonInteractable>();
-            if (buttonTaskHandler != null && button != null)
+            HandleButtonLightHit(buttonLight);
+            return;
+        }
+
+        if (IsBusy) return;
+
+        if (tr.TryGetComponent<ButtonInteractable>(out var button))
+        {
+            if (buttonTaskHandler != null)
             {
                 buttonTaskHandler.MoveToButton(button);
             }
             return;
         }
 
-        if (ray.CompareTag("Pickup"))
+        if (tr.TryGetComponent<PickupItem>(out var item))
         {
-            var item = ray.GetComponent<PickupItem>();
-            if (pickupTaskHandler != null && item != null)
+            if (pickupTaskHandler != null)
             {
                 pickupTaskHandler.MoveToPickup(item);
             }
             return;
         }
 
-        if (ray.CompareTag("Ground") && agent != null)
+        if (tr.TryGetComponent<ThrowableBall>(out var ball))
         {
-            agent.SetDestination(hit.point);
+            if (ballThrowTaskHandler != null)
+            {
+                // Solo ir a la pelota si todavía no trae una
+                if (!ballThrowTaskHandler.IsCarrying)
+                {
+                    ballThrowTaskHandler.MoveToBall(ball);
+                }
+            }
+            return;
+        }
+
+        if (agent != null)
+        {
+            // Opción A: seguir usando tag "Ground"
+            if (tr.CompareTag("Ground"))
+            {
+                agent.SetDestination(hit.point);
+                return;
+            }
         }
     }
 
-    public void AssignTask(TaskType taskType, Transform target)
+    public void HandleThrowRay(RaycastHit hit)
     {
-        switch (taskType)
-        {
-            case TaskType.Pickup:
-                var item = target.GetComponent<PickupItem>();
-                if (pickupTaskHandler != null && item != null)
-                {
-                    pickupTaskHandler.MoveToPickup(item);
-                }
-                break;
+        if (ballThrowTaskHandler == null) return;
 
-            case TaskType.Button:
-                var button = target.GetComponent<ButtonInteractable>();
-                if (buttonTaskHandler != null && button != null)
-                {
-                    buttonTaskHandler.MoveToButton(button);
-                }
-                break;
-        }
+        if (!ballThrowTaskHandler.IsCarrying) return;
+
+        ballThrowTaskHandler.ThrowToPoint(hit.point);
     }
+
+    public void HandleButtonHit(ButtonInteractable button)
+    {
+        if (button == null) return;
+
+        button.StartInteraction();
+    }
+
+    public void HandleButtonLightHit(ButtonLight buttonLight)
+    {
+        if (buttonLight == null) return;
+
+        buttonLight.Interactuar();
+    }
+
 }

@@ -12,6 +12,7 @@ public class VRPointAndClick : MonoBehaviour
 
     [Header("Input Action")]
     public InputActionProperty selectAction;
+    public InputActionProperty throwAction;
 
     [Header("References")]
     public NavMeshAgent agent;
@@ -30,6 +31,11 @@ public class VRPointAndClick : MonoBehaviour
             if (selectAction.action.WasPressedThisFrame())
             {
                 taskManager.HandleRaycastHit(hit, agent);
+            }
+
+            if (throwAction.action.WasPressedThisFrame())
+            {
+                taskManager.HandleThrowRay(hit);
             }
         }
         else
