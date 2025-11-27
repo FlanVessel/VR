@@ -1,12 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.AI;
+
 
 public class ButtonLight : MonoBehaviour
 {
-    [Header("Luces a controlar")]
-    public Light[] luces;
+    [Header("Luces a controlar (GameObjects con Light o lo que sea)")]
+    public GameObject[] luces;
 
     [Header("Configuración")]
     public float tiempoEspera = 1.0f;
@@ -14,9 +14,7 @@ public class ButtonLight : MonoBehaviour
     [Header("UI de carga (opcional)")]
     public Image imagenCarga;
 
-    [Header("Barreras para el watcher")]
-    public NavMeshObstacle[] barreras;
-
+    [Header("Pared / barrera a desactivar")]
     public GameObject pared;
 
     private bool estaOcupado = false;
@@ -24,11 +22,7 @@ public class ButtonLight : MonoBehaviour
     private void Start()
     {
         if (imagenCarga != null)
-        {
             imagenCarga.gameObject.SetActive(false);
-        }
-
-        ActualizarBarreras(EstanLucesEncendidas());
     }
 
     public void Interactuar()
@@ -41,25 +35,27 @@ public class ButtonLight : MonoBehaviour
     private IEnumerator ToggleLuzRoutine()
     {
         estaOcupado = true;
-        pared.SetActive(false);
 
+        // Mostrar carga
         if (imagenCarga != null)
             imagenCarga.gameObject.SetActive(true);
 
-        // Esperar el tiempo de "carga"
-        yield return new WaitForSeconds(tiempoEspera);
-
-        // Invertir el estado de cada luz individualmente
+        // Cambiar luces (toggle de todos los elementos del array)
         if (luces != null)
         {
-            foreach (var l in luces)
+            foreach (var go in luces) // go puede ser null si no se asignó nada en el inspector
             {
-                if (l == null) continue;
-                l.enabled = !l.enabled;
+                if (go == null) continue; // Saltar si es null
+                go.SetActive(!go.activeSelf); // Toggle del estado activo
             }
         }
 
-        ActualizarBarreras(EstanLucesEncendidas());
+        // Desactivar la pared (o podrías hacer toggle si quieres que se vuelva a activar)
+        if (pared != null)
+            pared.SetActive(false);
+
+        // Esperar el tiempo de carga solo como efecto visual
+        yield return new WaitForSeconds(tiempoEspera);
 
         if (imagenCarga != null)
             imagenCarga.gameObject.SetActive(false);
@@ -67,25 +63,4 @@ public class ButtonLight : MonoBehaviour
         estaOcupado = false;
     }
 
-    private bool EstanLucesEncendidas()
-    {
-        if (luces == null || luces.Length == 0 || luces[0] == null)
-            return false;
-
-        return luces[0].enabled;
-    }
-
-    private void ActualizarBarreras(bool activar)
-    {
-        if (barreras == null) return;
-
-        bool activarBarreras = !activar;
-
-        foreach (var obs in barreras)
-        {
-            if (obs == null) continue;
-
-            obs.enabled = activarBarreras;
-        }
-    }
 }
