@@ -24,6 +24,7 @@ public class VRPointAndClick : MonoBehaviour
         Ray ray = new Ray(rayOrigin.position, rayOrigin.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, rayMask))
         {
+
             lineRenderer.SetPosition(0, ray.origin);
             lineRenderer.SetPosition(1, hit.point);
             lineRenderer.enabled = true;
@@ -37,6 +38,7 @@ public class VRPointAndClick : MonoBehaviour
             {
                 taskManager.HandleThrowRay(hit);
             }
+
         }
         else
         {
