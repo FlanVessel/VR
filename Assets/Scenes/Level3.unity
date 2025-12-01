@@ -3083,6 +3083,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 355065617409618136, guid: 544bd20a3e34ae74e83748381e28a47c, type: 3}
+      propertyPath: agent
+      value: 
+      objectReference: {fileID: 926626749}
+    - target: {fileID: 355065617409618136, guid: 544bd20a3e34ae74e83748381e28a47c, type: 3}
+      propertyPath: taskManager
+      value: 
+      objectReference: {fileID: 64644856}
     - target: {fileID: 376117812413337397, guid: 544bd20a3e34ae74e83748381e28a47c, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
