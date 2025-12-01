@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
@@ -31,18 +30,56 @@ public class VRPointAndClick : MonoBehaviour
 
             if (selectAction.action.WasPressedThisFrame())
             {
-                taskManager.HandleRaycastHit(hit, agent);
+                // ¿Es un PickupItem?
+                var pickup = hit.collider.GetComponent<PickupItem>();
+                if (pickup != null)
+                {
+                    taskManager.AssignPickupTask(pickup);
+                    return;
+                }
+
+                var button = hit.collider.GetComponent<ButtonInteractable>();
+                if (button != null)
+                {
+                    taskManager.AssignButtonTask(button);
+                    return;
+                }
+
+                var ball = hit.collider.GetComponent<ThrowableBall>();
+                if (ball != null)
+                {
+                    taskManager.AssignBallTask(ball);
+                    return;
+                }
+
+                // 4) ButtonLight que se activa con el rayo directamente
+                var lightButton = hit.collider.GetComponent<ButtonLight>();
+                if (lightButton != null)
+                {
+                    taskManager.AssignButtonLightTask(lightButton);
+                    return;
+                }
+
+                // ¿Es suelo? (Mover al watcher sin tareas)
+                if (hit.collider.CompareTag("Ground"))
+                {
+                    agent.SetDestination(hit.point);
+                    return;
+                }
             }
 
-            if (throwAction.action.WasPressedThisFrame())
-            {
-                taskManager.HandleThrowRay(hit);
-            }
 
         }
         else
         {
             lineRenderer.enabled = false;
         }
+
+        if (throwAction.action.WasPressedThisFrame())
+        {
+            taskManager.ThrowBall(rayOrigin.forward);
+        } 
+
     }
+
 }

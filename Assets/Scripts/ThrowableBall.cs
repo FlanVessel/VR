@@ -1,93 +1,98 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class ThrowableBall : MonoBehaviour
 {
-    public Rigidbody rb;
+    private Rigidbody _rb;
+    private bool _isHeld = false;
 
-    [Header("Referencia al TaskManager")]
-    public TaskManager taskManager;
+    [Header("Throw Settings")]
+    public float throwForce = 10f;
+    public float respawnDelay = 2f;
+
+    private Vector3 _originalPosition;
+    private Quaternion _originalRotation;
+    private Transform _originalParent;
 
     private void Awake()
     {
-        if (rb == null) rb = GetComponent<Rigidbody>();
-
-        if (taskManager == null)
-        {
-            taskManager = Object.FindFirstObjectByType<TaskManager>();
-        }
+        _rb = GetComponent<Rigidbody>();
+        _originalPosition = transform.position;
+        _originalRotation = transform.rotation;
+        _originalParent = transform.parent;
     }
 
-    public void AttachTo(Transform holder)
+    public void TryPickup(Transform holder)
     {
-        rb.isKinematic = true;
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (_isHeld) return;
+        
+        _isHeld = true;
 
+        if (!_rb.isKinematic)
+        {
+
+            // 1. Frenar físicas ANTES de activar isKinematic
+            _rb.linearVelocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+            
+        }
+
+
+        // 2. Ahora sí convertirlo en kinematic
+        _rb.isKinematic = true;
+
+        // 3. "Adjuntar" la pelota al watcher
         transform.SetParent(holder);
-        transform.localPosition = Vector3.zero;
+        transform.localPosition = new Vector3(0, 1.5f, 0);
+
     }
 
-    public void ThrowTowards(Vector3 target, float arcHeight)
+    public void Throw(Vector3 direction)
     {
+        if (!_isHeld) return;
+
+        _isHeld = false;
         transform.SetParent(null);
-        rb.isKinematic = false;
 
-        Vector3 startPos = transform.position;
-        Vector3 dir = target - startPos;
+        _rb.isKinematic = false;
+        _rb.linearVelocity = direction.normalized * throwForce;
 
-        // Separar componente horizontal y vertical
-        Vector3 dirXZ = new Vector3(dir.x, 0f, dir.z);
-        float distXZ = dirXZ.magnitude;
+        StartCoroutine(RespawnAfterDelay());
+    }
 
-        if (distXZ < 0.1f)
-        {
-            // Muy cerca: tirar un poquito hacia adelante
-            dirXZ = transform.forward;
-            distXZ = 1f;
-        }
+    private IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(respawnDelay);
 
-        // Tiempo aproximado según distancia horizontal
-        float time = Mathf.Max(distXZ / 5f, 0.3f); // 5 = velocidad horizontal base
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+        _rb.isKinematic = true;
 
-        Vector3 vXZ = dirXZ / time;
+        transform.position = _originalPosition;
+        transform.rotation = _originalRotation;
+        transform.SetParent(_originalParent);
 
-        float g = Physics.gravity.y;
-        float vY = (dir.y + 0.5f * -g * time * time) / time;
-
-        Vector3 velocity = vXZ + Vector3.up * vY;
-        rb.linearVelocity = velocity;
+        gameObject.SetActive(true);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        var col = collision.collider;
-
-        // 1) Si golpea un ButtonInteractable → lo mandamos al TaskManager
-        if (col.TryGetComponent<ButtonInteractable>(out var button))
+        // 1) Botón normal
+        var button = collision.collider.GetComponent<ButtonInteractable>();
+        if (button != null)
         {
-            if (taskManager != null)
-            {
-                taskManager.HandleButtonHit(button);
-            }
-            else
-            {
-                // Plan B por si no hay TaskManager
-                button.StartInteraction();
-            }
+            button.StartInteraction();
+            return;
         }
 
-        if (col.TryGetComponent<ButtonLight>(out var buttonLight))
+        // 2) ButtonLight (interruptor de luz, pared, etc.)
+        var lightButton = collision.collider.GetComponent<ButtonLight>();
+        if (lightButton != null)
         {
-            if (taskManager != null)
-            {
-                taskManager.HandleButtonLightHit(buttonLight);
-            }
-            else
-            {
-                // Plan B por si no hay TaskManager
-                buttonLight.Interactuar();
-            }
+            // Cambia "Activate" por el nombre real de tu método público en ButtonLight
+            lightButton.Activate();
+            return;
         }
     }
 }

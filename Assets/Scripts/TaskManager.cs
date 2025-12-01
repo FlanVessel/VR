@@ -1,100 +1,131 @@
 using UnityEngine.AI;
 using UnityEngine;
-using UnityEngine.UI;
+using System.Collections;
+
+public enum TaskType
+{
+    None,
+    Pickup
+}
 
 public class TaskManager : MonoBehaviour
 {
-    [Header("Tareas Disponibles")]
+    [Header("Referencias")]
+    public NavMeshAgent watcher;
+    public PickupTaskHandler pickupHandler;
     public CharacterTaskHandler buttonTaskHandler;
-    public PickupTaskHandler pickupTaskHandler;
     public BallThrowTaskHandler ballThrowTaskHandler;
 
-    // Propiedad para saber si el personaje está ocupado
-    public bool IsBusy =>
-        (ballThrowTaskHandler != null && ballThrowTaskHandler.IsBusy) ||
-        (pickupTaskHandler     != null && pickupTaskHandler.IsBusy);
+    [Header("Estados")]
+    public bool IsBusy { get; private set; }
+    private TaskType _currentTask = TaskType.None;
 
-    // Maneja el RaycastHit recibido y delega la acción al manejador correspondiente
-    public void HandleRaycastHit(RaycastHit hit, NavMeshAgent agent)
+    private PickupItem _activeItem;
+    private Transform _activeDropZone;
+
+    // ================== PICKUP (llave + dropzone) ==================
+    public void AssignPickupTask(PickupItem item)
     {
-        if (hit.collider == null) return;
-
-        Transform tr = hit.collider.transform;
-
-        if (tr.TryGetComponent<ButtonLight>(out var buttonLight))
-        {
-            HandleButtonLightHit(buttonLight);
-            return;
-        }
-
         if (IsBusy) return;
 
-        if (tr.TryGetComponent<ButtonInteractable>(out var button))
-        {
-            if (buttonTaskHandler != null)
-            {
-                buttonTaskHandler.MoveToButton(button);
-            }
-            return;
-        }
+        _currentTask = TaskType.Pickup;
+        _activeItem = item;
+        _activeDropZone = item.linkedDropZone.transform;
 
-        if (tr.TryGetComponent<PickupItem>(out var item))
-        {
-            if (pickupTaskHandler != null)
-            {
-                pickupTaskHandler.MoveToPickup(item);
-            }
-            return;
-        }
+        IsBusy = true;
 
-        if (tr.TryGetComponent<ThrowableBall>(out var ball))
-        {
-            if (ballThrowTaskHandler != null)
-            {
-                // Solo ir a la pelota si todavía no trae una
-                if (!ballThrowTaskHandler.IsCarrying)
-                {
-                    ballThrowTaskHandler.MoveToBall(ball);
-                }
-            }
-            return;
-        }
+        watcher.SetDestination(item.transform.position);
 
-        if (agent != null)
+        StartCoroutine(PickupTaskRoutine());
+    }
+
+    private IEnumerator PickupTaskRoutine()
+    {
+        // 1) Llegar al item
+        yield return new WaitUntil(() =>
+            !watcher.pathPending &&
+            watcher.remainingDistance <= watcher.stoppingDistance
+        );
+
+        // 2) Esperar 3 segundos
+        yield return new WaitForSeconds(3f);
+
+        // 3) Recoger físicamente
+        pickupHandler.PickupItem(_activeItem);
+
+        // 4) Esperar a que el jugador lo lleve manualmente al dropzone
+        yield return new WaitUntil(() =>
+            !watcher.pathPending &&
+            Vector3.Distance(watcher.transform.position, _activeDropZone.position) <= watcher.stoppingDistance
+        );
+
+        // 5) Esperar 3 segundos
+        yield return new WaitForSeconds(3f);
+
+        // 6) Soltar item
+        pickupHandler.DropItem(_activeDropZone);
+
+        // 7) Abrir puerta
+        var door = _activeDropZone.GetComponent<DoorController>();
+        if (door != null)
+            door.OpenDoor();
+
+        // 8) Limpieza
+        _currentTask = TaskType.None;
+        _activeItem = null;
+        _activeDropZone = null;
+        IsBusy = false;
+    }
+
+    // ================== BOTÓN normal ==================
+    public void AssignButtonTask(ButtonInteractable button)
+    {
+        if (IsBusy) return; // si quieres que no interrumpa tareas de pickup
+        if (buttonTaskHandler != null && button != null)
         {
-            // Opción A: seguir usando tag "Ground"
-            if (tr.CompareTag("Ground"))
-            {
-                agent.SetDestination(hit.point);
-                return;
-            }
+            buttonTaskHandler.MoveToButton(button);
         }
     }
 
-    // Maneja el lanzamiento de la pelota
-    public void HandleThrowRay(RaycastHit hit)
+    public void AssignButtonLightTask(ButtonLight buttonLight)
     {
-        if (ballThrowTaskHandler == null) return;
+        if (IsBusy) return;
 
-        if (!ballThrowTaskHandler.IsCarrying) return;
+        IsBusy = true;
 
-        ballThrowTaskHandler.ThrowToPoint(hit.point);
+        watcher.SetDestination(buttonLight.transform.position);
+
+        StartCoroutine(ButtonLightRoutine(buttonLight));
     }
 
-    // Maneja la interacción directa con un botón (con pelota)
-    public void HandleButtonHit(ButtonInteractable button)
+    private IEnumerator ButtonLightRoutine(ButtonLight buttonLight)
     {
-        if (button == null) return;
+        yield return new WaitUntil(() =>
+            !watcher.pathPending &&
+            watcher.remainingDistance <= watcher.stoppingDistance
+        );
 
-        button.StartInteraction();
+        // Activar el botón
+        buttonLight.Activate();
+
+        IsBusy = false;
     }
 
-    // Maneja la interacción directa con una luz de botón (con pelota)
-    public void HandleButtonLightHit(ButtonLight buttonLight)
+    // ================== PELOTA ==================
+    public void AssignBallTask(ThrowableBall ball)
     {
-        if (buttonLight == null) return;
+        if (ballThrowTaskHandler != null && ball != null)
+        {
+            ballThrowTaskHandler.MoveToBall(ball);
+        }
+    }
 
-        buttonLight.Interactuar();
+    public void ThrowBall(Vector3 direction)
+    {
+        if (ballThrowTaskHandler != null)
+        {
+            ballThrowTaskHandler.ThrowHeldBall(direction);
+        }
     }
 
 }

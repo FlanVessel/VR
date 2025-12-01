@@ -45,4 +45,11 @@ public class ButtonInteractable : MonoBehaviour
         _isInteracting = false;
         Debug.Log("Circulo Reseteado");
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.GetComponent<ThrowableBall>())
+            StartInteraction();
+    }
+
 }

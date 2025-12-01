@@ -5,62 +5,81 @@ using UnityEngine.UI;
 
 public class ButtonLight : MonoBehaviour
 {
-    [Header("Luces a controlar (GameObjects con Light o lo que sea)")]
-    public GameObject[] luces;
+    [Header("Luces que quiero controlar")]
+    public Light[] lightsToToggle;
 
-    [Header("Configuración")]
-    public float tiempoEspera = 1.0f;
+    [Header("Obstáculo que bloquea el paso")]
+    public GameObject obstacle;
 
-    [Header("UI de carga (opcional)")]
-    public Image imagenCarga;
+    [Header("UI - Círculo de progreso encima del botón")]
+    public Image progressCircle;
+    public float activationTime = 3f;
 
-    [Header("Pared / barrera a desactivar")]
-    public GameObject pared;
-
-    private bool estaOcupado = false;
+    private bool _isOn = false;
+    private bool _isProcessing = false;
 
     private void Start()
     {
-        if (imagenCarga != null)
-            imagenCarga.gameObject.SetActive(false);
+        if (progressCircle != null)
+            progressCircle.fillAmount = 0f;
+
+        ApplyState();
     }
 
-    public void Interactuar()
+    public void Activate()
     {
-        if (estaOcupado) return;
+        if (_isProcessing) return;
 
-        StartCoroutine(ToggleLuzRoutine());
+        StartCoroutine(ActivationRoutine());
     }
 
-    private IEnumerator ToggleLuzRoutine()
+    private IEnumerator ActivationRoutine()
     {
-        estaOcupado = true;
+        _isProcessing = true;
 
-        // Mostrar carga
-        if (imagenCarga != null)
-            imagenCarga.gameObject.SetActive(true);
+        float timer = 0f;
 
-        // Cambiar luces (toggle de todos los elementos del array)
-        if (luces != null)
+        if (progressCircle != null)
+            progressCircle.gameObject.SetActive(true);
+
+        while (timer < activationTime)
         {
-            foreach (var go in luces) // go puede ser null si no se asignó nada en el inspector
-            {
-                if (go == null) continue; // Saltar si es null
-                go.SetActive(!go.activeSelf); // Toggle del estado activo
-            }
+            timer += Time.deltaTime;
+
+            if (progressCircle != null)
+                progressCircle.fillAmount = timer / activationTime;
+
+            yield return null;
         }
 
-        // Desactivar la pared (o podrías hacer toggle si quieres que se vuelva a activar)
-        if (pared != null)
-            pared.SetActive(false);
+        // Toggle ON/OFF
+        _isOn = !_isOn;
+        ApplyState();
 
-        // Esperar el tiempo de carga solo como efecto visual
-        yield return new WaitForSeconds(tiempoEspera);
+        if (progressCircle != null)
+        {
+            progressCircle.fillAmount = 0f;
+            progressCircle.gameObject.SetActive(false);
+        }
 
-        if (imagenCarga != null)
-            imagenCarga.gameObject.SetActive(false);
+        _isProcessing = false;
+    }
 
-        estaOcupado = false;
+    private void ApplyState()
+    {
+        foreach (var l in lightsToToggle)
+            if (l != null)
+                l.enabled = _isOn;
+
+        if (obstacle != null)
+            obstacle.SetActive(!_isOn); // ON = luz prendida = obstáculo apagado
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Activación por pelota
+        if (collision.collider.GetComponent<ThrowableBall>())
+            Activate();
     }
 
 }

@@ -468,7 +468,7 @@ Transform:
   m_GameObject: {fileID: 314049770}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.84, y: 0.848, z: 17.37}
+  m_LocalPosition: {x: 0.28, y: 1.37, z: 17.37}
   m_LocalScale: {x: 0.53154, y: 0.53154, z: 0.53154}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -486,8 +486,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6c8adc9773bd2445b2319f3a59a2271, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ThrowableBall
-  rb: {fileID: 314049776}
-  taskManager: {fileID: 636208321}
+  throwForce: 20
+  respawnDelay: 2
 --- !u!54 &314049776
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -734,8 +734,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72a86d00f58a9d14384389dd464ec806, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TaskManager
+  watcher: {fileID: 6472321228721776441}
+  pickupHandler: {fileID: 1777462981515481037}
   buttonTaskHandler: {fileID: 3219190527068621618}
-  pickupTaskHandler: {fileID: 1777462981515481037}
   ballThrowTaskHandler: {fileID: 6472321228721776443}
 --- !u!4 &636208322
 Transform:
@@ -1427,7 +1428,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144317080}
   m_LocalRotation: {x: -0, y: -0.18421952, z: -0, w: 0.9828851}
-  m_LocalPosition: {x: 0, y: 0, z: 17.067}
+  m_LocalPosition: {x: 0, y: 0, z: -10.015}
   m_LocalScale: {x: 0.010414038, y: 0.010414038, z: 0.010414038}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1435,7 +1436,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: -21.231, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.73, y: 2.052}
+  m_AnchoredPosition: {x: 0.33, y: 2.052}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1144317082
@@ -1861,7 +1862,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1366001685
 Transform:
   m_ObjectHideFlags: 0
@@ -2527,13 +2528,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd88bac46a230014fbf01ae2f3a7c2dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ButtonLight
-  luces:
-  - {fileID: 1366001684}
-  - {fileID: 1903826490}
-  - {fileID: 2005920669}
-  tiempoEspera: 1.5
-  imagenCarga: {fileID: 1144317082}
-  pared: {fileID: 885155841}
+  lightsToToggle:
+  - {fileID: 1366001687}
+  - {fileID: 1903826493}
+  - {fileID: 2005920672}
+  obstacle: {fileID: 885155841}
+  progressCircle: {fileID: 1144317082}
+  activationTime: 3
 --- !u!65 &1613148352
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2549,7 +2550,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -2620,7 +2621,7 @@ Transform:
   m_GameObject: {fileID: 1613148350}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.79, y: 0.94, z: -10.01}
+  m_LocalPosition: {x: 0.32, y: 0.94, z: -10.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2676,7 +2677,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -3157,7 +3158,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1903826491
 Transform:
   m_ObjectHideFlags: 0
@@ -3483,7 +3484,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2005920670
 Transform:
   m_ObjectHideFlags: 0
@@ -3642,9 +3643,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94bc40b645d802140810d5c0b8590d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupTaskHandler
-  watcher: {fileID: 6472321228721776441}
-  pickupTime: 3
-  dropTime: 3
 --- !u!54 &1943011467270137690
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -3855,10 +3853,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f5ab2f54fbfe3448af333347a81881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BallThrowTaskHandler
-  watcher: {fileID: 6472321228721776441}
-  holdPoint: {fileID: 1488761315}
-  pickupTime: 0.5
-  arcHeight: 2
 --- !u!212 &6933146095900671788
 SpriteRenderer:
   m_ObjectHideFlags: 0
