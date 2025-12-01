@@ -15,6 +15,8 @@ public class CharacterTaskHandler : MonoBehaviour
 
             if (watcher.remainingDistance <= watcher.stoppingDistance)
             {
+
+                EventManager.TriggerEvent("WatcherHere", null);
                 // Cuando llega al boton
                 _currentButton.StartInteraction();
                 Debug.Log("Si, llame al Metodo StartInteraction()");

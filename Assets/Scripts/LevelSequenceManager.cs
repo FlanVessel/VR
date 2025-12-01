@@ -13,6 +13,10 @@ public class LevelSequenceManager : MonoBehaviour
 
     private Dictionary<string, LevelStatus> levelStatuses = new Dictionary<string, LevelStatus>();
 
+    [Header("Pantalla final")]
+    public GameObject finalPanel;
+    public string restartSceneName;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -50,6 +54,28 @@ public class LevelSequenceManager : MonoBehaviour
         else
         {
             Debug.Log("No tengo mas niveles que cargar");
+
+            if (finalPanel != null)
+            {
+                finalPanel.SetActive(true);
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Debug.LogWarning("No hay 'finalPanel' asignado en el LevelSequenceManager");
+            }
         }
+    }
+
+    public void RestartGame()
+    {
+        if (string.IsNullOrEmpty(restartSceneName))
+        {
+            Debug.LogWarning("restartSceneName no está asignado.");
+            return;
+        }
+
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(restartSceneName);
     }
 }

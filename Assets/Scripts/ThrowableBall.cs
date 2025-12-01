@@ -78,7 +78,7 @@ public class ThrowableBall : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        // 1) Botón normal
+        // Botón normal
         var button = collision.collider.GetComponent<ButtonInteractable>();
         if (button != null)
         {
@@ -86,7 +86,7 @@ public class ThrowableBall : MonoBehaviour
             return;
         }
 
-        // 2) ButtonLight (interruptor de luz, pared, etc.)
+        // ButtonLight (que enciende luces o apaga)
         var lightButton = collision.collider.GetComponent<ButtonLight>();
         if (lightButton != null)
         {
@@ -94,5 +94,15 @@ public class ThrowableBall : MonoBehaviour
             lightButton.Activate();
             return;
         }
+
+        // Desactivar cañón si choca con uno
+        var canon = collision.collider.GetComponent<Canon>();
+        if (canon != null)
+        {
+            canon.SetActive(false);
+            return;
+        }
+
     }
+
 }

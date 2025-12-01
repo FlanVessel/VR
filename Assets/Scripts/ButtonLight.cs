@@ -52,7 +52,7 @@ public class ButtonLight : MonoBehaviour
             yield return null;
         }
 
-        // Toggle ON/OFF
+        //ON/OFF
         _isOn = !_isOn;
         ApplyState();
 

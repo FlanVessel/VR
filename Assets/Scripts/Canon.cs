@@ -52,4 +52,9 @@ public class Canon : MonoBehaviour
             bullet.Launch(spawnPoint.forward * speed);
         }
     }
+
+    public void SetActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
+    }
 }
